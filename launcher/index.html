@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Zak Launchpad</title>
+  <style>
+    :root{
+      --bg: #0b0d10;
+      --panel: rgba(255,255,255,0.06);
+      --panel2: rgba(255,255,255,0.08);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.64);
+      --stroke: rgba(255,255,255,0.12);
+      --shadow: 0 12px 40px rgba(0,0,0,0.45);
+      --r: 18px;
+      --r2: 24px;
+      --gap: 12px;
+    }
+
+    *{ box-sizing:border-box; }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(1200px 700px at 20% 10%, rgba(120,160,255,0.12), transparent 55%),
+        radial-gradient(900px 600px at 90% 30%, rgba(0,255,150,0.10), transparent 55%),
+        radial-gradient(800px 500px at 30% 90%, rgba(255,0,120,0.08), transparent 60%),
+        var(--bg);
+      -webkit-font-smoothing: antialiased;
+      padding:
+        calc(env(safe-area-inset-top) + 14px)
+        calc(env(safe-area-inset-right) + 14px)
+        calc(env(safe-area-inset-bottom) + 16px)
+        calc(env(safe-area-inset-left) + 14px);
+    }
+
+    .shell{
+      max-width: 760px;
+      margin: 0 auto;
+      display:flex;
+      flex-direction:column;
+      gap: 14px;
+    }
+
+    .hero{
+      background: var(--panel);
+      border: 1px solid var(--stroke);
+      border-radius: var(--r2);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .titleRow{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap: 12px;
+    }
+
+    h1{
+      margin: 0;
+      font-size: 22px;
+      line-height: 1.1;
+      letter-spacing: 0.2px;
+    }
+
+    .sub{
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .controls{
+      margin-top: 12px;
+      display:grid;
+      gap: 10px;
+      grid-template-columns: 1fr auto auto;
+      align-items:center;
+    }
+
+    input[type="text"]{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 999px;
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,0.25);
+      color: var(--text);
+      outline:none;
+      font-size: 15px;
+    }
+    input[type="text"]::placeholder{ color: rgba(255,255,255,0.35); }
+
+    button{
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-size: 14px;
+      cursor:pointer;
+      user-select:none;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active{ transform: translateY(1px); }
+
+    .module{
+      background: var(--panel);
+      border: 1px solid var(--stroke);
+      border-radius: var(--r2);
+      box-shadow: var(--shadow);
+      padding: 14px;
+    }
+
+    .moduleHead{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .moduleHead h2{
+      margin:0;
+      font-size: 16px;
+      letter-spacing: 0.2px;
+      color: rgba(255,255,255,0.88);
+    }
+
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      padding: 8px 12px;
+    }
+
+    .phrases{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .phraseCard{
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      padding: 12px;
+      min-height: 92px;
+      display:flex;
+      flex-direction:column;
+      gap: 8px;
+    }
+
+    .label{
+      font-size: 12px;
+      color: rgba(255,255,255,0.62);
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .phrase{
+      font-size: 14px;
+      line-height: 1.25;
+      color: rgba(255,255,255,0.90);
+      white-space: pre-wrap;
+    }
+
+    .tiny{
+      margin-top: 10px;
+      color: rgba(255,255,255,0.52);
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    details{
+      margin-top: 10px;
+      border: 1px solid var(--stroke);
+      border-radius: 16px;
+      background: rgba(255,255,255,0.04);
+      padding: 10px 12px;
+    }
+    summary{
+      cursor:pointer;
+      color: rgba(255,255,255,0.80);
+      font-size: 13px;
+      user-select:none;
+    }
+    .settingsGrid{
+      margin-top: 10px;
+      display:grid;
+      gap: 10px;
+    }
+    textarea{
+      width:100%;
+      min-height: 84px;
+      resize: vertical;
+      padding: 10px 10px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,0.22);
+      color: var(--text);
+      font-size: 13px;
+      outline:none;
+    }
+    .row{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .row label{
+      font-size: 13px;
+      color: rgba(255,255,255,0.78);
+      display:flex;
+      align-items:center;
+      gap: 8px;
+    }
+    .row input[type="number"]{
+      width: 96px;
+      padding: 8px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,0.22);
+      color: var(--text);
+      outline:none;
+      font-size: 13px;
+    }
+
+    .cards{
+      display:flex;
+      flex-direction:column;
+      gap: 10px;
+      padding: 4px 2px;
+    }
+
+    a.card{
+      display:flex;
+      align-items:center;
+      gap: 12px;
+      text-decoration:none;
+      color: var(--text);
+      background: var(--panel2);
+      border: 1px solid var(--stroke);
+      border-radius: var(--r2);
+      padding: 14px;
+      box-shadow: 0 10px 26px rgba(0,0,0,0.35);
+    }
+    .icon{
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      background: rgba(0,0,0,0.25);
+      border: 1px solid var(--stroke);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      color: rgba(255,255,255,0.85);
+      flex: 0 0 auto;
+    }
+    .cardText{ display:flex; flex-direction:column; gap: 3px; }
+    .cardTitle{ font-size: 15px; font-weight: 650; }
+    .cardSub{ font-size: 12.5px; color: rgba(255,255,255,0.60); }
+
+    .footerTip{
+      text-align:center;
+      color: rgba(255,255,255,0.45);
+      font-size: 12px;
+      padding: 6px 8px 0;
+    }
+
+    @media (max-width: 560px){
+      .controls{
+        grid-template-columns: 1fr;
+      }
+      .controls .btnRow{
+        display:flex;
+        gap: 10px;
+      }
+      .phrases{
+        grid-template-columns: 1fr;
+      }
+    }
+    
+    .historyList{
+  margin-top: 8px;
+  display: grid;
+  gap: 10px;
+}
+.historyItem{
+  background: rgba(0,0,0,0.18);
+  border: 1px solid var(--stroke);
+  border-radius: 14px;
+  padding: 10px;
+}
+.historyMeta{
+  font-size: 11px;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 6px;
+}
+.historyLine{
+  font-size: 13px;
+  line-height: 1.25;
+  color: rgba(255,255,255,0.86);
+  margin-top: 4px;
+}
+.tinyBtn{
+  padding: 6px 10px;
+  font-size: 12px;
+}
+  </style>
+</head>
+<body>
+  <div class="shell">
+
+    <div class="hero">
+      <div class="titleRow">
+        <div>
+          <h1>Zak Launchpad</h1>
+          <div class="sub">No sponsors. No surprises. Just buttons.</div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <input id="searchInput" type="text" placeholder="Search (or paste URL)" />
+        <div class="btnRow">
+          <button id="addBtn">Add</button>
+          <button id="resetBtn">Reset</button>
+        </div>
+      </div>
+    </div>
+
+    <section class="module" aria-label="Catchphrases">
+      <div class="moduleHead">
+        <h2>Catchphrases</h2>
+        <button class="pill" id="spinBtn">🎰 Spin</button>
+      </div>
+
+      <div class="phrases">
+        <div class="phraseCard">
+          <div class="label">Dark / Witty</div>
+          <div class="phrase" id="phraseDark">Tap “Spin” to generate.</div>
+        </div>
+        <div class="phraseCard">
+          <div class="label">Tocco’s</div>
+          <div class="phrase" id="phraseToccos">Tap “Spin” to generate.</div>
+        </div>
+      </div>
+
+      <div class="tiny" id="aiStatus">
+        Uses your Netlify Function + OpenAI API key. If it errors, it’ll tell you why (usually missing env var).
+      </div>
+
+      <details>
+        <summary>Settings (stored locally on this device)</summary>
+        <div class="settingsGrid">
+          <div>
+            <div class="label" style="margin-bottom:6px;">Dark prompt</div>
+            <textarea id="promptDark"></textarea>
+          </div>
+          <div>
+            <div class="label" style="margin-bottom:6px;">Tocco’s prompt</div>
+            <textarea id="promptToccos"></textarea>
+          </div>
+         <div class="row">
+  <label><input type="checkbox" id="autoOnLoad" /> Generate on page load</label>
+  <label>Max output tokens <input type="number" id="maxTokens" min="80" max="400" step="10" /></label>
+  <button id="saveSettingsBtn">Save</button>
+  <button id="resetAISettingsBtn" class="tinyBtn">Reset AI settings</button>
+</div>
+        </div>
+      </details>
+      <details>
+  <summary>History (stored locally on this device)</summary>
+  <div class="settingsGrid">
+    <div class="row">
+      <button id="copyLatestBtn" class="tinyBtn">Copy latest</button>
+      <button id="clearHistoryBtn" class="tinyBtn">Clear history</button>
+    </div>
+    <div id="aiHistory" class="historyList"></div>
+    <div class="tiny">Incognito won’t have history. Regular mode will.</div>
+  </div>
+</details>
+    </section>
+
+    <div class="cards" id="cards"></div>
+
+    <div class="footerTip">
+      Tip: Your cards + AI settings are saved per-device (localStorage). Same deploy, different setups.
+    </div>
+
+  </div>
+
+  <script>
+    // ---------------------------
+    // Launchpad cards (unchanged behavior)
+    // ---------------------------
+    const STORAGE_KEY = "launchpad_cards_v3";
+    const DEFAULT_CARDS = [
+      { label: "Netlify", url: "https://app.netlify.com", sub: "deploys / logs", icon: "N" },
+      { label: "Mermaid Live", url: "https://mermaid.live", sub: "flowcharts", icon: "M" },
+      { label: "Cloudflare", url: "https://dash.cloudflare.com", sub: "tunnels / DNS", icon: "C" },
+      { label: "GitHub", url: "https://github.com", sub: "repos", icon: "G" },
+      { label: "ChatGPT", url: "https://chat.openai.com", sub: "the sausage factory", icon: "AI" }
+    ];
+
+    function loadCards() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return DEFAULT_CARDS;
+        const parsed = JSON.parse(raw);
+        return Array.isArray(parsed) ? parsed : DEFAULT_CARDS;
+      } catch {
+        return DEFAULT_CARDS;
+      }
+    }
+
+    function saveCards(cards) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(cards));
+    }
+
+    function renderCards() {
+      const cards = loadCards();
+      const wrap = document.getElementById("cards");
+      wrap.innerHTML = "";
+      for (const c of cards) {
+        const a = document.createElement("a");
+        a.className = "card";
+        a.href = c.url;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+
+        const icon = document.createElement("div");
+        icon.className = "icon";
+        icon.textContent = (c.icon || c.label || "?").toString().slice(0, 3);
+
+        const text = document.createElement("div");
+        text.className = "cardText";
+
+        const t = document.createElement("div");
+        t.className = "cardTitle";
+        t.textContent = c.label || c.url;
+
+        const s = document.createElement("div");
+        s.className = "cardSub";
+        s.textContent = c.sub || "";
+
+        text.appendChild(t);
+        text.appendChild(s);
+        a.appendChild(icon);
+        a.appendChild(text);
+        wrap.appendChild(a);
+      }
+    }
+
+    function addCardFromInput() {
+      const input = document.getElementById("searchInput");
+      const val = (input.value || "").trim();
+      if (!val) return;
+
+      let url = val;
+      if (!/^https?:\/\//i.test(url)) url = "https://" + url;
+
+      const label = val.replace(/^https?:\/\//i, "").split("/")[0] || "Link";
+      const icon = label.slice(0, 2).toUpperCase();
+
+      const cards = loadCards();
+      cards.unshift({ label, url, sub: "", icon });
+      saveCards(cards);
+      renderCards();
+      input.value = "";
+    }
+
+    document.getElementById("addBtn").addEventListener("click", addCardFromInput);
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      saveCards(DEFAULT_CARDS);
+      renderCards();
+    });
+    document.getElementById("searchInput").addEventListener("keydown", (e) => {
+      if (e.key === "Enter") addCardFromInput();
+    });
+
+    // ---------------------------
+    // Catchphrases module (FULL AI via Netlify Function)
+    // ---------------------------
+    const AI_SETTINGS_KEY = "launchpad_ai_settings_v1";
+
+const AI_LOG_KEY = "launchpad_ai_history_v1";
+const AI_LOG_MAX = 40;
+
+    const DEFAULT_DARK_PROMPT =
+`Write one short dark, witty, profane catchphrase.
+Rules:
+- Keep it under 12 words.
+- No hate speech, no slurs, no targeting protected classes.
+- Not sexual. Not violent. No self-harm.
+- It can be rude, but not cruel.
+Vibe examples (don’t copy): "Fuck it, just take it." / "Bad ideas, expertly executed."`;
+
+const DEFAULT_TOCCOS_PROMPT = `Write one short catchphrase for "Tocco's Deli".
+
+Rules:
+- Generate 1 punchy one-liner/tagline idea for Tocco’s (deli/sandwich shop).
+- Go wide and unpredictable: funny, chaotic, clever, weird; a little dirty is fine (no hate/slurs).
+- Vary the format every time (tagline, fake review quote, menu-board quip, radio sign-off, command, pun, haiku-ish line).
+- Avoid clichés like "fresh bread" or "stacked sandwiches" unless you twist them into something genuinely new.
+- Sometimes include "Tocco’s" or "Tocco’s Deli", sometimes don’t.
+- 5–14 words.
+- Output ONLY the line (no quotes, no emojis, no extra text).`;
+
+    function loadAISettings(){
+      try{
+        const raw = localStorage.getItem(AI_SETTINGS_KEY);
+        if(!raw) throw new Error("nope");
+        const s = JSON.parse(raw);
+        return {
+          promptDark: s.promptDark || DEFAULT_DARK_PROMPT,
+          promptToccos: s.promptToccos || DEFAULT_TOCCOS_PROMPT,
+          autoOnLoad: !!s.autoOnLoad,
+          maxTokens: Number(s.maxTokens || 160)
+        };
+      }catch{
+        return {
+          promptDark: DEFAULT_DARK_PROMPT,
+          promptToccos: DEFAULT_TOCCOS_PROMPT,
+          autoOnLoad: false,
+          maxTokens: 160
+        };
+      }
+    }
+
+    function saveAISettings(s){
+      localStorage.setItem(AI_SETTINGS_KEY, JSON.stringify(s));
+    }
+
+    function wireSettingsUI(){
+      const s = loadAISettings();
+      document.getElementById("promptDark").value = s.promptDark;
+      document.getElementById("promptToccos").value = s.promptToccos;
+      document.getElementById("autoOnLoad").checked = s.autoOnLoad;
+      document.getElementById("maxTokens").value = s.maxTokens;
+
+      document.getElementById("saveSettingsBtn").addEventListener("click", () => {
+        const next = {
+          promptDark: document.getElementById("promptDark").value.trim() || DEFAULT_DARK_PROMPT,
+          promptToccos: document.getElementById("promptToccos").value.trim() || DEFAULT_TOCCOS_PROMPT,
+          autoOnLoad: document.getElementById("autoOnLoad").checked,
+          maxTokens: Number(document.getElementById("maxTokens").value || 160)
+        };
+        saveAISettings(next);
+        setStatus("Saved locally on this device. No redeploy required.", false);
+      });
+    }
+
+    function setStatus(msg, isError){
+      const el = document.getElementById("aiStatus");
+      el.textContent = msg;
+      el.style.color = isError ? "rgba(255,120,120,0.95)" : "rgba(255,255,255,0.52)";
+    }
+
+async function spinCatchphrases(){
+  const phraseDarkEl = document.getElementById("phraseDark");
+  const phraseToccosEl = document.getElementById("phraseToccos");
+  const s = loadAISettings();
+
+  phraseDarkEl.textContent = "Generating…";
+  phraseToccosEl.textContent = "Generating…";
+  setStatus("Calling /.netlify/functions/catchphrases …", false);
+
+  try{
+    const res = await fetch("/.netlify/functions/catchphrases", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        darkPrompt: s.promptDark,
+        toccosPrompt: s.promptToccos,
+        maxOutputTokens: s.maxTokens
+      })
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if(!res.ok){
+      const msg = data && data.error ? data.error : ("HTTP " + res.status);
+      throw new Error(msg);
+    }
+
+    const dark = data.dark || "…";
+    const toccos = data.toccos || "…";
+
+    phraseDarkEl.textContent = dark;
+    phraseToccosEl.textContent = toccos;
+
+    // log only on success
+    addAIHistoryEntry({ ts: Date.now(), dark, toccos });
+    renderAIHistory();
+
+    setStatus("Freshly generated. (Every spin costs API tokens. Like taxes, but dumber.)", false);
+  }catch(err){
+    phraseDarkEl.textContent = "Generation failed.";
+    phraseToccosEl.textContent = "Generation failed.";
+    setStatus("AI error: " + (err && err.message ? err.message : String(err)), true);
+  }
+}
+
+setStatus("Freshly generated. (Every spin costs API tokens. Like taxes, but dumber.)", false);
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  }[c]));
+}
+
+async function copyToClipboard(text){
+  try{
+    await navigator.clipboard.writeText(text);
+  }catch{
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.style.position = "fixed";
+    ta.style.left = "-9999px";
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    ta.remove();
+  }
+}
+
+function loadAIHistory(){
+  try{
+    const raw = localStorage.getItem(AI_LOG_KEY);
+    if(!raw) return [];
+    const arr = JSON.parse(raw);
+    return Array.isArray(arr) ? arr : [];
+  }catch{
+    return [];
+  }
+}
+
+function saveAIHistory(arr){
+  localStorage.setItem(AI_LOG_KEY, JSON.stringify(arr));
+}
+
+function addAIHistoryEntry(entry){
+  const arr = loadAIHistory();
+  arr.unshift(entry);
+
+  // de-dupe consecutive identical outputs (helps when the model repeats)
+  const deduped = arr.filter((e, i, a) => {
+    if(i === 0) return true;
+    return !(
+      (e.dark || "") === (a[i-1].dark || "") &&
+      (e.toccos || "") === (a[i-1].toccos || "")
+    );
+  });
+
+  saveAIHistory(deduped.slice(0, AI_LOG_MAX));
+}
+
+function renderAIHistory(){
+  const wrap = document.getElementById("aiHistory");
+  if(!wrap) return;
+
+  const arr = loadAIHistory();
+  if(arr.length === 0){
+    wrap.innerHTML = `<div class="tiny">No history yet. Hit Spin.</div>`;
+    return;
+  }
+
+  wrap.innerHTML = "";
+  for(const item of arr){
+    const div = document.createElement("div");
+    div.className = "historyItem";
+
+    const when = new Date(item.ts || Date.now()).toLocaleString();
+    div.innerHTML = `
+      <div class="historyMeta">${escapeHtml(when)}</div>
+      <div class="historyLine"><span class="label">Dark</span> ${escapeHtml(item.dark || "")}</div>
+      <div class="historyLine"><span class="label">Tocco’s</span> ${escapeHtml(item.toccos || "")}</div>
+      <div class="row" style="margin-top:8px;">
+        <button class="tinyBtn">Copy</button>
+      </div>
+    `;
+
+    div.querySelector("button").addEventListener("click", async () => {
+      const txt = `Dark: ${item.dark}\nTocco’s: ${item.toccos}`;
+      await copyToClipboard(txt);
+      setStatus("Copied to clipboard.", false);
+    });
+
+    wrap.appendChild(div);
+  }
+}
+
+    document.getElementById("spinBtn").addEventListener("click", spinCatchphrases);
+
+    // boot
+    renderCards();
+    wireSettingsUI();
+    renderAIHistory();
+    const bootSettings = loadAISettings();
+    if(bootSettings.autoOnLoad) spinCatchphrases();
+   document.getElementById("resetAISettingsBtn").addEventListener("click", () => {
+  localStorage.removeItem(AI_SETTINGS_KEY);
+  const s2 = loadAISettings();
+  document.getElementById("promptDark").value = s2.promptDark;
+  document.getElementById("promptToccos").value = s2.promptToccos;
+  document.getElementById("autoOnLoad").checked = s2.autoOnLoad;
+  document.getElementById("maxTokens").value = s2.maxTokens;
+  setStatus("AI settings reset to defaults (global).", false);
+});
+
+document.getElementById("clearHistoryBtn").addEventListener("click", () => {
+  localStorage.removeItem(AI_LOG_KEY);
+  renderAIHistory();
+  setStatus("History cleared (this device).", false);
+});
+
+document.getElementById("copyLatestBtn").addEventListener("click", async () => {
+  const arr = loadAIHistory();
+  if(!arr[0]){
+    setStatus("No history yet.", false);
+    return;
+  }
+  await copyToClipboard(`Dark: ${arr[0].dark}\nTocco’s: ${arr[0].toccos}`);
+  setStatus("Latest copied to clipboard.", false);
+}); 
+  </script>
+</body>
+</html>
